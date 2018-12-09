@@ -1,0 +1,41 @@
+{
+  "name": "event-booking-system",
+  "version": "1.0.0",
+  "description": "Event booking system",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uczenSaitamy/event-booking-system.git"
+  },
+  "author": "Damian Linek & Michal Rojek",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/uczenSaitamy/event-booking-system/issues"
+  },
+  "homepage": "https://github.com/uczenSaitamy/event-booking-system#readme",
+  "dependencies": {
+    "bcrypt": "^1.0.3",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.2",
+    "bookshelf": "^0.13.3",
+    "connect-flash": "^0.1.1",
+    "cors": "^2.8.4",
+    "express": "^4.16.4",
+    "express-messages": "^1.0.1",
+    "express-session": "^1.15.6",
+    "express-validator": "^4.3.0",
+    "jsonwebtoken": "^8.1.0",
+    "knex": "^0.15.2",
+    "mariadb": "^2.0.1-beta",
+    "mongoose": "^4.13.7",
+    "mysql": "^2.16.0",
+    "mysql2": "^1.6.4",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "path": "^0.12.7",
+    "validator": "^9.2.0"
+  }
+}
