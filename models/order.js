@@ -10,7 +10,7 @@ Order.create = (order) => {
         user_id: order.user_id,
         event_id: order.event_id,
         ticket_quantity: order.ticket_quantity
-    }).save();
+    }).save(null, {method: 'insert'});
 }
 
 module.exports = Order;

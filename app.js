@@ -98,15 +98,18 @@ app.get('*', function(req, res, next){
 const authCheckMiddleware = require('./middleware/auth-check');
 app.use('/api', authCheckMiddleware);
 app.use('/events', authCheckMiddleware);
+app.use('/tickets', authCheckMiddleware);
 
 // Route Files
 const authRoutes = require('./routes/auth.js');
 const apiRoutes = require('./routes/api.js');
 const eventsRoutes = require('./routes/events');
+const ticketsRoutes = require('./routes/tickets');
 const testget = require('./routes/testget');
 app.use('/auth', authRoutes);
 app.use('/api', apiRoutes);
 app.use('/events', eventsRoutes);
+app.use('/tickets', ticketsRoutes);
 // localhost/testget - nie jest zabezpieczony przed niezalogowanym użytkownikiem
 // do tego trzeba użyc middleware 'authCheckMiddleware' - tak jak wyżej z /api
 app.use('/testget', testget);

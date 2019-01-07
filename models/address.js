@@ -12,7 +12,7 @@ Address.create = (address) => {
         sity: address.sity,
         state: address.state,
         postal_code: address.postal_code
-    }).save();
+    }).save(null, {method: 'insert'});
 }
 
 module.exports = Address;

@@ -9,7 +9,7 @@ Ticket.create = (ticket) => {
         id: ticket.id,
         event_id: ticket.event_id,
         quantity: ticket.quantity
-    }).save();
+    }).save(null, {method: 'insert'});
 }
 
 module.exports = Ticket;
