@@ -2,6 +2,22 @@ const express = require('express');
 const router = new express.Router();
 const Event = require('../models/event');
 
+router.get('/all', (req, res) => {
+    Event.fetchAll().then(function(result) {
+        res.status(200).json({
+            events: result
+        });
+    })
+});
+
+router.get('/event/:id', (req, res) => {
+    Event.where('id', req.params.id).fetch().then(function(result) {
+        res.status(200).json({
+            event: result
+        });
+    })
+});
+
 router.post('/create', ensureModerator, (req, res) => {
     req.checkBody('title', 'Event title is required.').notEmpty();
     req.checkBody('body', 'Event description is required.').notEmpty();
@@ -17,7 +33,7 @@ router.post('/create', ensureModerator, (req, res) => {
         });
     } else {
         const event = {
-            id: 2,
+            id: req.body.id,
             title: req.body.title,
             body: req.body.body,
             address_id: req.body.address_id,
