@@ -20,6 +20,8 @@ module.exports = (req, res, next) => {
                 return res.status(401).end();
             }
     
+            console.log(user);
+
             res.locals.userEmail = userEmail;
             res.locals.userRole = user[0].roles_id;
             return next();

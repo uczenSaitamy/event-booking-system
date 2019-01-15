@@ -18,7 +18,8 @@ module.exports = new PassportLocalStrategy({
 
     return User.where({ email: userData.email }).fetchAll().then(function(output) {
         const user = output.serialize()
-        if (!user) {
+
+        if (user.length == 0) {
             const error = new Error('Incorrect email or password');
             error.name = 'IncorrectCredentialsError';
 
@@ -44,7 +45,9 @@ module.exports = new PassportLocalStrategy({
                 sub: user[0].email
             };
 
-            const token = jwt.sign(payload, jwtSecret.jwtSecret);
+            const token = jwt.sign(payload, jwtSecret.jwtSecret, {
+                expiresIn: "1d"
+            });
             const data = {
                 name: user[0].name,
                 type: user[0].roles_id
