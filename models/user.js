@@ -8,9 +8,9 @@ User.create = (user) => {
     return new User ({
         email: user.email,
         password: user.password,
-        roles_id: 1,
+        roles_id: user.roles_id,
         name: user.name,
-        address_id: 1,
+        address_id: user.address_id,
         token: user.token,
         created_at: user.created_at,
         updated_at: user.updated_at

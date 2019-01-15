@@ -26,7 +26,7 @@ router.get('/address/:id', (req, res) => {
     });
 });
 
-router.post('/create', ensureModerator, (req, res) => {
+router.post('/create', (req, res) => {
     req.checkBody('addressline1', 'Address addressline1 is required.').notEmpty();
     req.checkBody('addressline2', 'Address addressline2 is required.').notEmpty();
     req.checkBody('sity', 'Address sity is required.').notEmpty();
@@ -61,7 +61,7 @@ router.post('/create', ensureModerator, (req, res) => {
     }
 });
 
-router.put('/update/:id', ensureModerator, (req, res) => {
+router.put('/update/:id', (req, res) => {
     req.checkBody('addressline1', 'Address addressline1 is required.').notEmpty();
     req.checkBody('addressline2', 'Address addressline2 is required.').notEmpty();
     req.checkBody('sity', 'Address sity is required.').notEmpty();
@@ -104,7 +104,7 @@ router.put('/update/:id', ensureModerator, (req, res) => {
     }
 });
 
-router.delete('/id/:id', ensureModerator, function(req, res) {
+router.delete('/id/:id', function(req, res) {
     new Address({id: req.params.id})
     .destroy()
     .then(function(model) {
@@ -117,25 +117,5 @@ router.delete('/id/:id', ensureModerator, function(req, res) {
         });
     });
 });
-  
-function ensureModerator(req, res, next) {
-    if(typeof res.locals.userRole !== "undefined" && (res.locals.userRole === 2 || res.locals.userRole === 3)) {
-        return next();
-    } else {
-        res.status(400).json({
-            failureMessage : "Nie jesteś uprawiony do wykonania tej operacji."
-        });
-    }
-}
-
-function ensureAdmin(req, res, next) {
-    if(typeof res.locals.userRole !== "undefined" && res.locals.userRole === 3) {
-        return next();
-    } else {
-        res.status(400).json({
-            failureMessage : "Nie jesteś uprawiony do wykonania tej operacji."
-        });
-    }
-}
 
 module.exports = router;

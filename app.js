@@ -100,6 +100,7 @@ app.use('/events', authCheckMiddleware);
 app.use('/tickets', authCheckMiddleware);
 app.use('/orders', authCheckMiddleware);
 app.use('/addresses', authCheckMiddleware);
+app.use('/users', authCheckMiddleware);
 
 // Route Files
 const authRoutes = require('./routes/auth.js');
@@ -107,11 +108,13 @@ const eventsRoutes = require('./routes/events');
 const ticketsRoutes = require('./routes/tickets');
 const ordersRoutes = require('./routes/orders');
 const addressesRoutes = require('./routes/addresses');
+const usersRoutes = require('./routes/users');
 app.use('/auth', authRoutes);
 app.use('/events', eventsRoutes);
 app.use('/tickets', ticketsRoutes);
 app.use('/orders', ordersRoutes);
 app.use('/addresses', addressesRoutes);
+app.use('/users', usersRoutes);
 
 // Start Server
 app.listen(4000, function(){

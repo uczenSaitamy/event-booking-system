@@ -31,6 +31,11 @@ function validateSignupForm(payload) {
         errors.name = "Podaj swoję imię.";
     }
 
+    if(!payload || typeof payload.address_id !== 'string' || payload.address_id.trim().length === 0) {
+        isFormValid = false;
+        errors.name = "Podaj id swojego adresu.";
+    }
+
     if(!isFormValid) {
         message = "Sprawdź czy wystąpiły błędy.";
     }
@@ -94,6 +99,13 @@ router.post('/signup', (req, res, next) => {
                     errors: {
                         email: 'Ten email jest już zajęty.'
                     }
+                });
+            }
+
+            if(err === "ADDRESS_NOT_FOUND") {
+                return res.status(400).json({
+                    success: false,
+                    message: "Nie znaleziono adresu o podanym id."
                 });
             }
 
