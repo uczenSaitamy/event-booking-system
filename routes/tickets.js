@@ -1,11 +1,16 @@
 const express = require('express');
 const router = new express.Router();
 const Ticket = require('../models/ticket');
+const Event = require('../models/event');
 
 router.get('/all', (req, res) => {
     Ticket.fetchAll().then(function(result) {
         res.status(200).json({
             tickets: result
+        });
+    }, function(err) {
+        res.status(400).json({
+            message: err
         });
     })
 });
@@ -14,6 +19,10 @@ router.get('/ticket/:id', (req, res) => {
     Ticket.where('id', req.params.id).fetch().then(function(result) {
         res.status(200).json({
             ticket: result
+        });
+    }, function(err) {
+        res.status(400).json({
+            message: err
         });
     })
 });
@@ -29,16 +38,28 @@ router.post('/create', ensureModerator, (req, res) => {
             errors
         });
     } else {
-        const ticket = {
-            id: req.body.id,
-            event_id: req.body.event_id,
-            quantity: req.body.quantity
-        }
-
-        Ticket.create(ticket).then(function() {
-            res.status(200).json({
-                message: "Created ticket."
-            });
+        Event.where('id', req.body.event_id).fetch().then(function(result) {
+            if (result) {
+                const ticket = {
+                    id: req.body.id,
+                    event_id: req.body.event_id,
+                    quantity: req.body.quantity
+                }
+        
+                Ticket.create(ticket).then(function() {
+                    res.status(200).json({
+                        message: "Created ticket."
+                    });
+                }, function(err) {
+                    res.status(400).json({
+                        message: err
+                    });
+                });
+            } else {
+                res.status(400).json({
+                    message: "Nie znaleziono wydarzenia o podanym id."
+                });
+            }
         }, function(err) {
             res.status(400).json({
                 message: err
@@ -58,22 +79,40 @@ router.put('/update/:id', ensureModerator, (req, res) => {
             errors
         });
     } else {
-        const ticket = {
-            event_id: req.body.event_id,
-            quantity: req.body.quantity
-        }
+        Event.where('id', req.body.event_id).fetch().then(function(result) {
+            if (result) {
+                const ticket = {
+                    event_id: req.body.event_id,
+                    quantity: req.body.quantity
+                }
 
-        Ticket.where('id', req.params.id).fetch().then(function(result) {
-            result.set(ticket).save().then(function(model) {
-                res.status(200).json({
-                    message: "Updated ticket."
-                });
-            }, function(err) {
+                Ticket.where('id', req.params.id).fetch().then(function(result) {
+                    if (result) {
+                        result.set(ticket).save().then(function(model) {
+                            res.status(200).json({
+                                message: "Updated ticket."
+                            });
+                        }, function(err) {
+                            res.status(400).json({
+                                message: err
+                            });
+                        });
+                    } else {
+                        res.status(400).json({
+                            message: "Nie znaleziono biletu o podanym id."
+                        });
+                    }
+                })
+            } else {
                 res.status(400).json({
-                    message: err
+                    message: "Nie znaleziono wydarzenia o podanym id."
                 });
+            }
+        }, function(err) {
+            res.status(400).json({
+                message: err
             });
-        })
+        });
     }
 });
 
@@ -90,16 +129,6 @@ router.delete('/id/:id', ensureModerator, function(req, res) {
         });
     });
 });
-
-function ensureAuthenticated(req, res, next) {
-    if(typeof res.locals.userRole !== "undefined" && (res.locals.userRole === 1 || res.locals.userRole === 2 || res.locals.userRole === 3)) {
-        return next();
-    } else {
-        res.status(400).json({
-            failureMessage : "Nie jesteś uprawiony do wykonania tej operacji."
-        });
-    }
-}
   
 function ensureModerator(req, res, next) {
     if(typeof res.locals.userRole !== "undefined" && (res.locals.userRole === 2 || res.locals.userRole === 3)) {

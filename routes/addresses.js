@@ -7,7 +7,11 @@ router.get('/all', (req, res) => {
         res.status(200).json({
             addresses: result
         });
-    })
+    }, function(err) {
+        res.status(400).json({
+            message: err
+        });
+    });
 });
 
 router.get('/address/:id', (req, res) => {
@@ -15,7 +19,11 @@ router.get('/address/:id', (req, res) => {
         res.status(200).json({
             address: result
         });
-    })
+    }, function(err) {
+        res.status(400).json({
+            message: err
+        });
+    });
 });
 
 router.post('/create', ensureModerator, (req, res) => {
@@ -77,16 +85,22 @@ router.put('/update/:id', ensureModerator, (req, res) => {
         }
 
         Address.where('id', req.params.id).fetch().then(function(result) {
-            result.set(address).save().then(function(model) {
-                res.status(200).json({
-                    message: "Updated address."
+            if (result) {
+                result.set(address).save().then(function(model) {
+                    res.status(200).json({
+                        message: "Updated address."
+                    });
+                }, function(err) {
+                    res.status(400).json({
+                        message: err
+                    });
                 });
-            }, function(err) {
+            } else {
                 res.status(400).json({
-                    message: err
+                    message: "Nie znaleziono adresu o podanym id."
                 });
-            });
-        })
+            }
+        });
     }
 });
 
@@ -103,16 +117,6 @@ router.delete('/id/:id', ensureModerator, function(req, res) {
         });
     });
 });
-
-function ensureAuthenticated(req, res, next) {
-    if(typeof res.locals.userRole !== "undefined" && (res.locals.userRole === 1 || res.locals.userRole === 2 || res.locals.userRole === 3)) {
-        return next();
-    } else {
-        res.status(400).json({
-            failureMessage : "Nie jesteś uprawiony do wykonania tej operacji."
-        });
-    }
-}
   
 function ensureModerator(req, res, next) {
     if(typeof res.locals.userRole !== "undefined" && (res.locals.userRole === 2 || res.locals.userRole === 3)) {

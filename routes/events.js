@@ -139,16 +139,6 @@ router.delete('/id/:id', ensureModerator, function(req, res) {
         });
     });
 });
-
-function ensureAuthenticated(req, res, next) {
-    if(typeof res.locals.userRole !== "undefined" && (res.locals.userRole === 1 || res.locals.userRole === 2 || res.locals.userRole === 3)) {
-        return next();
-    } else {
-        res.status(400).json({
-            failureMessage : "Nie jesteś uprawiony do wykonania tej operacji."
-        });
-    }
-}
   
 function ensureModerator(req, res, next) {
     if(typeof res.locals.userRole !== "undefined" && (res.locals.userRole === 2 || res.locals.userRole === 3)) {

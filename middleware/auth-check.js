@@ -19,8 +19,6 @@ module.exports = (req, res, next) => {
             if (!user) {
                 return res.status(401).end();
             }
-    
-            console.log(user);
 
             res.locals.userEmail = userEmail;
             res.locals.userRole = user[0].roles_id;
