@@ -115,7 +115,7 @@ app.use('/api', apiRoutes);
 app.use('/events', eventsRoutes);
 app.use('/tickets', ticketsRoutes);
 app.use('/orders', ordersRoutes);
-app.use('/addresses', ordersRoutes);
+app.use('/addresses', addressesRoutes);
 // localhost/testget - nie jest zabezpieczony przed niezalogowanym użytkownikiem
 // do tego trzeba użyc middleware 'authCheckMiddleware' - tak jak wyżej z /api
 app.use('/testget', testget);

@@ -1,13 +1,18 @@
 const express = require('express');
 const router = new express.Router();
 const Event = require('../models/event');
+const Address = require('../models/address');
 
 router.get('/all', (req, res) => {
     Event.fetchAll().then(function(result) {
         res.status(200).json({
             events: result
         });
-    })
+    }, function(err) {
+        res.status(400).json({
+            message: err
+        });
+    });
 });
 
 router.get('/event/:id', (req, res) => {
@@ -15,7 +20,11 @@ router.get('/event/:id', (req, res) => {
         res.status(200).json({
             event: result
         });
-    })
+    }, function(err) {
+        res.status(400).json({
+            message: err
+        });
+    });
 });
 
 router.post('/create', ensureModerator, (req, res) => {
@@ -27,23 +36,35 @@ router.post('/create', ensureModerator, (req, res) => {
 
     let errors = req.validationErrors();
 
-    if(errors) {
+    if (errors) {
         res.status(200).json({
             errors
         });
     } else {
-        const event = {
-            id: req.body.id,
-            title: req.body.title,
-            body: req.body.body,
-            address_id: req.body.address_id,
-            date: req.body.date
-        }
-
-        Event.create(event).then(function() {
-            res.status(200).json({
-                message: "Created event."
-            });
+        Address.where('id', req.body.address_id).fetch().then(function(result) {
+            if(result) {
+                const event = {
+                    id: req.body.id,
+                    title: req.body.title,
+                    body: req.body.body,
+                    address_id: req.body.address_id,
+                    date: req.body.date
+                }
+        
+                Event.create(event).then(function() {
+                    res.status(200).json({
+                        message: "Created event."
+                    });
+                }, function(err) {
+                    res.status(400).json({
+                        message: err
+                    });
+                });
+            } else {
+                res.status(400).json({
+                    message: "Nie znaleziono adresu o podanym id."
+                });
+            }
         }, function(err) {
             res.status(400).json({
                 message: err
@@ -61,29 +82,47 @@ router.put('/update/:id', ensureModerator, (req, res) => {
 
     let errors = req.validationErrors();
 
-    if(errors) {
+    if (errors) {
         res.status(200).json({
             errors
         });
     } else {
-        const event = {
-            title: req.body.title,
-            body: req.body.body,
-            address_id: req.body.address_id,
-            date: req.body.date
-        }
-
-        Event.where('id', req.params.id).fetch().then(function(result) {
-            result.set(event).save().then(function(model) {
-                res.status(200).json({
-                    message: "Updated event."
-                });
-            }, function(err) {
+        Address.where('id', req.body.address_id).fetch().then(function(result) {
+            if (result) {
+                const event = {
+                    title: req.body.title,
+                    body: req.body.body,
+                    address_id: req.body.address_id,
+                    date: req.body.date
+                }
+        
+                Event.where('id', req.params.id).fetch().then(function(result) {
+                    if (result) {
+                        result.set(event).save().then(function(model) {
+                            res.status(200).json({
+                                message: "Updated event."
+                            });
+                        }, function(err) {
+                            res.status(400).json({
+                                message: err
+                            });
+                        });
+                    } else {
+                        res.status(400).json({
+                            message: "Nie znaleziono wydarzenia o podanym id."
+                        });
+                    }
+                })
+            } else {
                 res.status(400).json({
-                    message: err
+                    message: "Nie znaleziono adresu o podanym id."
                 });
+            }
+        }, function(err) {
+            res.status(400).json({
+                message: err
             });
-        })
+        });
     }
 });
 
